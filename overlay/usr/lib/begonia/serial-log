@@ -1,0 +1,2 @@
+#!/bin/sh
+exec journalctl -b -f -o short-monotonic > /dev/ttyGS0 2>&1

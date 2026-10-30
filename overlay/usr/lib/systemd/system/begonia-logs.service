@@ -1,0 +1,10 @@
+[Unit]
+Description=Save begonia boot evidence
+After=systemd-journald.service systemd-networkd.service sshd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/begonia/collect-logs
+
+[Install]
+WantedBy=multi-user.target

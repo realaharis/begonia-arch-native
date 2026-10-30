@@ -1,0 +1,5 @@
+2026-10-30: bash scripts/build.sh attempted under a 25-second network deadline.
+Vendored kernel config SHA512: PASS.
+Pinned-source Git fetch did not complete before timeout (exit 124).
+Separate HTTPS requests for GitHub and official Arch rootfs failed with curl exit 28, Proxy CONNECT aborted due to timeout.
+No kernel compilation or rootfs download completed. No GitHub Actions run exists.

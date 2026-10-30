@@ -1,0 +1,60 @@
+#!/bin/sh
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+mount -t devtmpfs devtmpfs /dev
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t tmpfs tmpfs /run
+mkdir -p /run/begonia /newroot /sys/kernel/config
+log() { echo "begonia-init: $*" | tee -a /run/begonia/init.log; echo "<6>begonia-init: $*" > /dev/kmsg; }
+fail() {
+  log "$*"
+  dmesg > /run/begonia/dmesg-failed.txt
+  if mountpoint -q /newroot; then
+    mkdir -p /newroot/var/log/begonia
+    id=$(cat /proc/sys/kernel/random/boot_id)
+    cp /run/begonia/init.log "/newroot/var/log/begonia/failure-$id.log"
+    cp /run/begonia/dmesg-failed.txt "/newroot/var/log/begonia/failure-kernel-$id.log"
+    sync
+  fi
+  # No anonymous remote shell. Repeated serial log dump permits host reconnect.
+  while :; do
+    if [ -e /dev/ttyGS0 ]; then
+      (cat /run/begonia/init.log; dmesg) > /dev/ttyGS0 2>/dev/null &
+      writer=$!; sleep 10; kill "$writer" 2>/dev/null
+    else sleep 5; fi
+  done
+}
+log "initramfs entered"
+/usb-gadget >> /run/begonia/init.log 2>&1 || log "USB setup failed"
+rootdev=
+# Raw ext4 only; no guessed /dev/sdc46 and no nested partition table.
+# Match a unique filesystem label. Never autoformat or repair any partition.
+n=0
+while [ "$n" -lt 60 ]; do
+  matches=
+  for sys in /sys/class/block/*; do
+    [ -f "$sys/partition" ] || continue
+    dev="/dev/${sys##*/}"
+    label=$(blkid -s LABEL -o value "$dev" 2>/dev/null)
+    [ "$label" != ARCHBEGONIA ] || matches="$matches $dev"
+  done
+  set -- $matches
+  [ "$#" -le 1 ] || fail "Duplicate ARCHBEGONIA filesystems; refusing to choose"
+  if [ "$#" -eq 1 ]; then rootdev="$1"; break; fi
+  n=$((n+1)); sleep 1
+done
+[ -n "$rootdev" ] || fail "No ARCHBEGONIA root filesystem after 60 seconds"
+mount -t ext4 -o rw "$rootdev" /newroot || fail "Root mount failed: $rootdev"
+[ -x /newroot/usr/lib/systemd/systemd ] || fail "systemd missing"
+grep -Eq '^ID=("?archarm"?)$' /newroot/etc/os-release || fail "Root is not Arch Linux ARM"
+mkdir -p /newroot/var/log/begonia /newroot/run /newroot/proc /newroot/sys /newroot/dev
+log "root mounted read-write on $rootdev; starting systemd"
+id=$(cat /proc/sys/kernel/random/boot_id)
+cp /run/begonia/init.log "/newroot/var/log/begonia/init-$id.log"
+dmesg > "/newroot/var/log/begonia/kernel-init-$id.log"
+sync
+mount --move /run /newroot/run
+mount --move /proc /newroot/proc
+mount --move /sys /newroot/sys
+mount --move /dev /newroot/dev
+exec switch_root /newroot /usr/lib/systemd/systemd

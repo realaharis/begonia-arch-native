@@ -1,0 +1,15 @@
+test_corrupted_payload (test_image_validation.Validation.test_corrupted_payload) ... ok
+test_decompression_limit (test_image_validation.Validation.test_decompression_limit) ... ok
+test_dtbo_offset_corruption (test_image_validation.Validation.test_dtbo_offset_corruption) ... ok
+test_fixture_structure (test_image_validation.Validation.test_fixture_structure) ... ok
+test_missing_cpio_trailer (test_image_validation.Validation.test_missing_cpio_trailer) ... ok
+test_no_unchecked_trailing_data (test_image_validation.Validation.test_no_unchecked_trailing_data) ... ok
+test_partition_too_small (test_image_validation.Validation.test_partition_too_small) ... ok
+test_truncated_component (test_image_validation.Validation.test_truncated_component) ... ok
+test_wrong_board (test_image_validation.Validation.test_wrong_board) ... ok
+test_wrong_header (test_image_validation.Validation.test_wrong_header) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.003s
+
+OK

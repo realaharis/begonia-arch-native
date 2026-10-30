@@ -1,0 +1,5 @@
+PASS: upstream kernel config SHA512 matches pinned APKBUILD.
+PASS: Bash and POSIX shell syntax.
+PASS: Python compilation.
+PASS: workflow YAML parse.
+Not checked: Actions execution, Kconfig resolution, kernel compilation, real initramfs execution or device boot.

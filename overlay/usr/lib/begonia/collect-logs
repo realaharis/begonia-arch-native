@@ -1,0 +1,22 @@
+#!/bin/sh
+set -eu
+dest=/var/log/begonia
+mkdir -p "$dest"
+id=$(cat /proc/sys/kernel/random/boot_id)
+{
+  uname -a
+  cat /proc/cmdline
+  cat /etc/os-release
+  findmnt /
+  lsblk -o NAME,SIZE,FSTYPE,LABEL,PARTLABEL,MOUNTPOINTS
+  ip -br address
+  systemctl --failed --no-pager
+  systemctl is-active multi-user.target || true
+  ls -l /sys/class/udc
+  ls -l /sys/class/power_supply
+} > "$dest/status-$id.txt" 2>&1
+dmesg > "$dest/dmesg-$id.txt"
+journalctl -b --no-pager -o short-monotonic > "$dest/journal-$id.txt"
+if [ -d /sys/fs/pstore ]; then cp -a /sys/fs/pstore "$dest/pstore-$id"; fi
+sync
+echo "$dest"

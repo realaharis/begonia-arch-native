@@ -1,0 +1,40 @@
+#!/bin/sh
+# Shared by initramfs and systemd. Built-in drivers are required for early use.
+set -eu
+mountpoint -q /sys/kernel/config || mount -t configfs configfs /sys/kernel/config
+g=/sys/kernel/config/usb_gadget/begonia
+if [ -d "$g" ] && [ -s "$g/UDC" ] && [ -n "$(cat "$g/UDC")" ]; then exit 0; fi
+mkdir -p "$g"
+cd "$g"
+# Linux gadget development IDs; not a registered product identity.
+echo 0x1d6b > idVendor
+echo 0x0104 > idProduct
+echo 0x0200 > bcdUSB
+echo 0x0100 > bcdDevice
+mkdir -p strings/0x409
+echo begonia-arch-development > strings/0x409/serialnumber
+echo 'Native Linux development' > strings/0x409/manufacturer
+echo 'Begonia Arch diagnostics' > strings/0x409/product
+mkdir -p configs/c.1/strings/0x409
+echo 'Ethernet and serial' > configs/c.1/strings/0x409/configuration
+echo 250 > configs/c.1/MaxPower
+mode=ecm
+for arg in $(cat /proc/cmdline); do
+  case "$arg" in arch.usb=rndis) mode=rndis;; arch.usb=ecm) mode=ecm;; esac
+done
+mkdir -p "functions/$mode.usb0" functions/acm.usb0
+echo 02:00:00:00:78:01 > "functions/$mode.usb0/dev_addr"
+echo 02:00:00:00:78:02 > "functions/$mode.usb0/host_addr"
+[ -L "configs/c.1/$mode.usb0" ] || ln -s "$g/functions/$mode.usb0" "configs/c.1/$mode.usb0"
+[ -L configs/c.1/acm.usb0 ] || ln -s "$g/functions/acm.usb0" configs/c.1/acm.usb0
+n=0
+while [ "$n" -lt 30 ]; do
+  for d in /sys/class/udc/*; do
+    [ -e "$d" ] || continue
+    echo "${d##*/}" > UDC
+    exit 0
+  done
+  n=$((n+1)); sleep 1
+done
+echo "No USB device controller appeared" >&2
+exit 1

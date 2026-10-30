@@ -1,0 +1,14 @@
+[Unit]
+Description=Read-only journal stream over USB ACM
+After=begonia-usb.service
+Requires=begonia-usb.service
+ConditionPathExists=/dev/ttyGS0
+
+[Service]
+Type=simple
+ExecStart=/usr/lib/begonia/serial-log
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

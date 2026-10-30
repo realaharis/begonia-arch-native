@@ -1,0 +1,26 @@
+{
+  "kernel": {
+    "url": "https://github.com/external-mirrors/mt6785-mainline-linux.git",
+    "upstream": "https://gitlab.postmarketos.org/mt6785-mainline/linux",
+    "commit": "203a993f86cdd71d2936ee0f301f733f5a15afcd",
+    "tag": "6.16.4-r0",
+    "license": "GPL-2.0-only"
+  },
+  "pmaports": {
+    "url": "https://github.com/external-mirrors/pmaports",
+    "commit": "8f2c59fa9a74adadd89e7a0069adc1efa0e7b909",
+    "config_sha512": "3a403015d0f2d56218793ebdeddd786efcad2a40d059d08cbc875dc42f8593ae3585b050195693eb10c3eaa24411d115b247ad651b65efe00df95aedab0271f0"
+  },
+  "rootfs": {
+    "url": "https://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz",
+    "sha256": null,
+    "note": "The initial capture is rolling. Retain the downloaded archive and its SHA256 for subsequent identical-input builds. No digest has been invented."
+  },
+  "touch_firmware_reference": {
+    "url": "https://gitlab.postmarketos.org/mt6785-mainline/firmware",
+    "commit": "d62a654f9f84344571cbf5a306d33869d49aa70b",
+    "license": "proprietary; redistribution terms not established",
+    "included": false,
+    "reason": "Display and touchscreen are deferred. No firmware required by the selected UFS/USB path has been identified."
+  }
+}

@@ -1,0 +1,13 @@
+[Unit]
+Description=Begonia USB Ethernet and ACM gadget
+After=systemd-udev-trigger.service
+Before=sshd.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/begonia/usb-gadget
+RemainAfterExit=yes
+TimeoutStartSec=40
+
+[Install]
+WantedBy=multi-user.target

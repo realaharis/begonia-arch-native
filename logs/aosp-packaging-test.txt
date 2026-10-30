@@ -1,0 +1,2 @@
+PASS: Independent AOSP/LineageOS mkbootimg revision 808ecd09666ffe0ff5800f02af693abce56eb395 generated a v2 synthetic image accepted by the validator; embedded component equality and SHA1 image ID checked.
+This tests packaging only. Synthetic payloads are not bootable and are deleted.

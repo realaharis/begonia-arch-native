@@ -39,6 +39,9 @@ for unit in "${units[@]}"; do
   test -f "$root/usr/lib/systemd/system/$unit"
 done
 systemctl --root="$root" enable "${units[@]}"
+# Display optional: failure never blocks the verified headless baseline.
+chmod 755 "$root/usr/lib/begonia/start-local-terminal"
+systemctl --root="$root" enable begonia-local-terminal.service
 ln -sfn /usr/lib/systemd/system/multi-user.target "$root/etc/systemd/system/default.target"
 # No display/touch probe or firmware substitution in the headless baseline.
 mkdir -p "$root/etc/modprobe.d" "$root/var/log/journal" "$root/var/log/begonia"

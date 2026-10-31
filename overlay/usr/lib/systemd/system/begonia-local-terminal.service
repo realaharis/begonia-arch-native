@@ -9,7 +9,7 @@ Type=simple
 ExecStart=/usr/lib/begonia/start-local-terminal
 Restart=on-failure
 RestartSec=5
-Environment=LIBSEAT_BACKEND=seatd
+Environment=LIBSEAT_BACKEND=builtin
 
 [Install]
 WantedBy=multi-user.target

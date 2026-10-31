@@ -55,8 +55,8 @@ chroot "$root" /usr/bin/pacman-key --populate archlinuxarm
 # Upgrade the userspace consistently rather than mixing a new sudo with old libraries.
 chroot "$root" /usr/bin/findmnt -T /var/cache/pacman/pkg
 chroot "$root" /usr/bin/df -h / /var/cache/pacman/pkg
-chroot "$root" /usr/bin/pacman -Syu --needed --noconfirm sudo openssh mkinitcpio util-linux
-for file in sudo visudo ssh-keygen mountpoint blkid; do
+chroot "$root" /usr/bin/pacman -Syu --needed --noconfirm sudo openssh mkinitcpio util-linux weston foot mesa libinput
+for file in sudo visudo ssh-keygen mountpoint blkid weston foot; do
   test -x "$root/usr/bin/$file" || { echo "Missing required Arch binary: $file" >&2; exit 1; }
 done
 mkdir -p out

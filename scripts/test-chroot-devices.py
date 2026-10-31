@@ -14,6 +14,10 @@ spec.loader.exec_module(devices)
 assert os.geteuid() == 0, 'Run with sudo on the CI runner'
 with tempfile.TemporaryDirectory() as directory:
     root = Path(directory)
+    (root/'etc').mkdir()
+    (root/'etc/passwd').write_text('root:x:0:0:root:/root:/bin/sh\n')
+    (root/'etc/group').write_text('root:x:0:\n')
+    (root/'etc/nsswitch.conf').write_text('passwd: files\ngroup: files\n')
     binary = Path(shutil.which('ssh-keygen'))
     libraries = subprocess.check_output(['ldd', str(binary)], text=True)
     for source in [str(binary), *re.findall(r'/[^\s()]+', libraries)]:

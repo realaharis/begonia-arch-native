@@ -19,7 +19,7 @@ for mode in ecm rndis; do
     --second_offset 0xbff88000 --tags_offset 0x0bc08000 --dtb_offset 0x0bc08000 \
     --pagesize 2048 --kernel out/Image.gz --ramdisk out/initramfs.cpio.gz \
     --dtb out/begonia.dtb --recovery_dtbo out/empty.dtbo \
-    --cmdline "bootopt=64S3,32N2,64N2 root=LABEL=ARCHBEGONIA rw loglevel=7 ignore_loglevel panic=0 systemd.unit=multi-user.target arch.usb=$mode" \
+    --cmdline "console=tty0 fbcon=map:0 bootopt=64S3,32N2,64N2 root=LABEL=ARCHBEGONIA rw loglevel=7 ignore_loglevel panic=0 systemd.unit=multi-user.target arch.usb=$mode" \
     --output "out/boot-$mode.img"
   python3 scripts/validate-boot.py "out/boot-$mode.img" --components out > "out/validation-$mode.json"
 done

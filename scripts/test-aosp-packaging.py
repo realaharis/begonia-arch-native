@@ -12,7 +12,9 @@ with tempfile.TemporaryDirectory() as tmp:
     p=Path(tmp);offset=2048
     for name,size in zip(("Image.gz","initramfs.cpio.gz","empty.dtbo","begonia.dtb"),sizes):
         (p/name).write_bytes(b[offset:offset+size]);offset+=(size+2047)//2048*2048
-    cmd=shlex.split(os.environ.get("MKBOOTIMG","mkbootimg"))
+    override=os.environ.get("MKBOOTIMG")
+    cmd=shlex.split(override) if override else [
+        "bash", str(Path(__file__).resolve().with_name("mkbootimg.sh"))]
     cmd+=["--header_version","2","--base","0x40078000","--kernel_offset","0x8000",
           "--ramdisk_offset","0x07c08000","--second_offset","0xbff88000",
           "--tags_offset","0x0bc08000","--dtb_offset","0x0bc08000","--pagesize","2048",

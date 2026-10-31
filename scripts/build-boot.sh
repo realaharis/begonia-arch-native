@@ -14,7 +14,7 @@ entry=struct.pack(">8I",len(b),64,0,0,0,0,0,0)
 Path("out/empty.dtbo").write_bytes(hdr+entry+b)
 PY
 for mode in ecm rndis; do
-  mkbootimg --header_version 2 --base 0x40078000 \
+  bash scripts/mkbootimg.sh --header_version 2 --base 0x40078000 \
     --kernel_offset 0x00008000 --ramdisk_offset 0x07c08000 \
     --second_offset 0xbff88000 --tags_offset 0x0bc08000 --dtb_offset 0x0bc08000 \
     --pagesize 2048 --kernel out/Image.gz --ramdisk out/initramfs.cpio.gz \

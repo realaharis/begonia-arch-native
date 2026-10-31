@@ -58,8 +58,9 @@
   with adb).
 * AOSP mkbootimg mirror used for local differential packaging validation:
   https://github.com/LineageOS/android_system_tools_mkbootimg/tree/808ecd09666ffe0ff5800f02af693abce56eb395
-  Only synthetic inputs were used; test outputs were deleted. CI repeats this
-  cross-check using the runner's mkbootimg package.
+  mkbootimg.py and gki/generate_gki_certificate.py are now vendored unmodified
+  under tools/mkbootimg with the Apache-2.0 license. Both the synthetic
+  packaging cross-check and production image assembly use this pinned version.
 
 ## Build status and distribution obligations
 

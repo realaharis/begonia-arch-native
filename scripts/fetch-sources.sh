@@ -19,10 +19,7 @@ git -C work/linux diff --exit-code
 git -C work/linux show -s --format=fuller HEAD > out/kernel-source.txt
 if [[ "${FETCH_ROOTFS:-1}" = 0 ]]; then exit 0; fi
 if [[ ! -s inputs/ArchLinuxARM-aarch64.tar.gz ]]; then
-  curl --fail --location --proto '=https' --proto-redir '=https' \
-    --connect-timeout 15 --max-time 1800 --retry 2 \
-    "${ROOTFS_URL:-${fields[3]}}" -o inputs/rootfs.download
-  mv inputs/rootfs.download inputs/ArchLinuxARM-aarch64.tar.gz
+  bash scripts/download-rootfs.sh
 fi
 if [[ -n "${ROOTFS_SHA256:-}" ]]; then
   [[ "$ROOTFS_SHA256" =~ ^[a-fA-F0-9]{64}$ ]]

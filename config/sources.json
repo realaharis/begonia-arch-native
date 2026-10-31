@@ -12,9 +12,13 @@
     "config_sha512": "3a403015d0f2d56218793ebdeddd786efcad2a40d059d08cbc875dc42f8593ae3585b050195693eb10c3eaa24411d115b247ad651b65efe00df95aedab0271f0"
   },
   "rootfs": {
-    "url": "https://os.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz",
+    "url": "https://ca.us.mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz",
     "sha256": null,
-    "note": "The initial capture is rolling. Retain the downloaded archive and its SHA256 for subsequent identical-input builds. No digest has been invented."
+    "note": "The initial capture is rolling. Retain the downloaded archive and its SHA256 for subsequent identical-input builds. No digest has been invented.",
+    "fallback_urls": [
+      "https://fl.us.mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz",
+      "https://nj.us.mirror.archlinuxarm.org/os/ArchLinuxARM-aarch64-latest.tar.gz"
+    ]
   },
   "touch_firmware_reference": {
     "url": "https://gitlab.postmarketos.org/mt6785-mainline/firmware",

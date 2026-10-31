@@ -20,4 +20,6 @@ done
 if grep -Eq '^(xorg-server|gnome-shell|plasma-desktop|phosh|xfce4-session) ' out/packages.txt; then
   echo "Unexpected desktop in input rootfs"; exit 1
 fi
+python3 scripts/create-devices.py "$root"
+bash scripts/check-rootfs-ssh.sh
 touch work/rootfs-prepared

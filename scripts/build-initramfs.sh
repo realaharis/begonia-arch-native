@@ -30,6 +30,7 @@ install -m755 /usr/lib/begonia/init "$d/init"
 install -m755 /usr/lib/begonia/usb-gadget "$d/usb-gadget"
 CHROOT
 d="$root/tmp/begonia-initrd"
+python3 scripts/create-devices.py "$d"
 # Run representative binaries inside the assembled initrd to catch missing loaders.
 chroot "$d" /bin/sh -c 'echo initramfs-userspace-ok; /bin/blkid --version; /bin/mountpoint --version'
 find "$d" -exec touch -h -d '@1756983151' {} +

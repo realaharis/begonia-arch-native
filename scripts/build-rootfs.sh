@@ -51,10 +51,7 @@ done
 rm -f "$root/etc/ssh/ssh_host_"* "$root/etc/machine-id" "$root/var/lib/dbus/machine-id"
 touch "$root/etc/machine-id"
 ln -s /etc/machine-id "$root/var/lib/dbus/machine-id"
-chroot "$root" /usr/bin/ssh-keygen -A
-mkdir -p "$root/run/sshd"
-chroot "$root" /usr/bin/sshd -t
-rm -f "$root/etc/ssh/ssh_host_"*
+bash scripts/check-rootfs-ssh.sh
 chroot "$root" /usr/bin/depmod "$(cat out/kernel.release)"
 bash scripts/build-initramfs.sh
 size="${ROOTFS_MIB:-4096}"

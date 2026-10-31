@@ -51,12 +51,14 @@ jobs:
           sudo bash scripts/build-rootfs.sh
           sudo bash scripts/build-boot.sh
       - name: Preserve input snapshot for repeat builds
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: official-arch-input-${{ github.run_id }}
           path: |
             inputs/ArchLinuxARM-aarch64.tar.gz
             inputs/SHA256SUMS
+            inputs/arch-package-inputs.tar
           retention-days: 30
           compression-level: 0
       - name: Build output and failure logs

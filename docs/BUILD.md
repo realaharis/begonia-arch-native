@@ -89,3 +89,16 @@ systemd boot. Firmware and panel activation remain a later milestone.
   guessed from the fact that the phone runs ColorOS.
 * Suspend is masked during the diagnostic milestone; power use is not optimized.
 * No AVB/vbmeta modification or auto-flashing hook exists.
+
+## Arch userspace dependencies
+
+The official rootfs does not guarantee `sudo`/`visudo`. Before device integration,
+`prepare-rootfs-packages.sh` initializes the Arch Linux ARM signing keyring and
+runs a signed `pacman -Syu --needed` transaction for sudo, openssh, mkinitcpio and
+util-linux. This runs in a private mount namespace on the native ARM builder;
+all build mounts and the temporary resolver configuration are cleaned up.
+The generic linux-aarch64 package is ignored because the device uses its pinned
+kernel. The transaction is rolling: the rootfs SHA alone no longer fixes all
+inputs. Preserve `arch-package-inputs.tar`, its SHA256 and `out/packages.txt` with
+the original rootfs snapshot to record the exact package inputs. Fully automated
+offline replay of the package transaction is not yet implemented.

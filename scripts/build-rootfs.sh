@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -Eeuo pipefail
+trap 'echo "Rootfs build failed at line $LINENO: $BASH_COMMAND" >&2' ERR
 cd "$(dirname "$0")/.."
 mkdir -p out logs work/rootfs
 exec > >(tee logs/rootfs.log) 2>&1
@@ -13,19 +14,16 @@ test -s inputs/ArchLinuxARM-aarch64.tar.gz
 root="$PWD/work/rootfs"
 bsdtar --acls --xattrs -xpf inputs/ArchLinuxARM-aarch64.tar.gz -C "$root"
 grep -Eq '^ID=("?archarm"?)$' "$root/etc/os-release"
-for f in usr/lib/systemd/systemd usr/sbin/sshd usr/lib/initcpio/busybox usr/bin/blkid; do
-  test -x "$root/$f"
+# Retain the device-specific kernel while preparing consistent Arch userspace.
+mkdir -p "$root/etc/pacman.d"
+sed -i '/^\[options\]/a IgnorePkg = linux-aarch64' "$root/etc/pacman.conf"
+bash scripts/prepare-rootfs-packages.sh
+for f in usr/lib/systemd/systemd usr/sbin/sshd usr/lib/initcpio/busybox usr/bin/blkid usr/bin/visudo; do
+  test -x "$root/$f" || { echo "Missing required rootfs binary: $f"; exit 1; }
 done
-# The host is aarch64; chroot is a build-time packaging tool only.
-# The final phone boots this filesystem directly, without Android or containers.
-chroot "$root" /usr/bin/pacman -Q > out/packages.txt
 if grep -Eq '^(xorg-server|gnome-shell|plasma-desktop|phosh|xfce4-session) ' out/packages.txt; then
   echo "Unexpected desktop in input rootfs"; exit 1
 fi
-# Retain the generic package database, but never use its kernel for the phone.
-# Prevent upgrades silently replacing the tested kernel payload.
-mkdir -p "$root/etc/pacman.d"
-sed -i '/^\[options\]/a IgnorePkg = linux-aarch64' "$root/etc/pacman.conf"
 cp -a work/kernel-package/usr/lib/modules/. "$root/usr/lib/modules/"
 cp out/Image.gz "$root/boot/Image-begonia.gz"
 mkdir -p "$root/boot/dtbs/mediatek"
@@ -43,7 +41,7 @@ chroot "$root" usermod -p '*' alarm
 install -d -m750 "$root/etc/sudoers.d"
 printf 'alarm ALL=(ALL:ALL) NOPASSWD: ALL\n' > "$root/etc/sudoers.d/10-alarm"
 chmod 440 "$root/etc/sudoers.d/10-alarm"
-chroot "$root" visudo -cf /etc/sudoers.d/10-alarm
+chroot "$root" /usr/bin/visudo -cf /etc/sudoers.d/10-alarm
 printf 'begonia-arch\n' > "$root/etc/hostname"
 printf 'LABEL=ARCHBEGONIA / ext4 defaults,noatime 0 1\n' > "$root/etc/fstab"
 units=(sshd.service systemd-networkd.service begonia-usb.service begonia-logs.service begonia-ssh-keys.service begonia-serial-log.service)
@@ -64,6 +62,7 @@ rm -f "$root/etc/ssh/ssh_host_"* "$root/etc/machine-id" "$root/var/lib/dbus/mach
 touch "$root/etc/machine-id"
 ln -s /etc/machine-id "$root/var/lib/dbus/machine-id"
 chroot "$root" /usr/bin/ssh-keygen -A
+mkdir -p "$root/run/sshd"
 chroot "$root" /usr/bin/sshd -t
 rm -f "$root/etc/ssh/ssh_host_"*
 chroot "$root" /usr/bin/depmod "$(cat out/kernel.release)"

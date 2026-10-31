@@ -1,0 +1,15 @@
+[Unit]
+Description=Experimental local DRM Arch terminal
+After=systemd-udev-settle.service
+Wants=systemd-udev-settle.service
+ConditionPathExists=/dev/dri/card0
+
+[Service]
+Type=simple
+ExecStart=/usr/lib/begonia/start-local-terminal
+Restart=on-failure
+RestartSec=5
+Environment=LIBSEAT_BACKEND=seatd
+
+[Install]
+WantedBy=multi-user.target

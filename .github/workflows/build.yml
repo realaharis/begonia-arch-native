@@ -39,6 +39,8 @@ jobs:
           sudo apt-get install -y clang lld llvm make gcc bison flex libssl-dev libelf-dev bc python3 zstd cpio libarchive-tools e2fsprogs kmod device-tree-compiler openssh-client
       - name: Fetch pinned sources (Arch input only for image builds)
         run: bash scripts/fetch-sources.sh
+      - name: Prepare and validate Arch userspace
+        run: sudo bash scripts/prepare-rootfs.sh
       - name: Compile kernel and matching DTB
         run: bash scripts/build-kernel.sh
       - name: Build headless Arch images

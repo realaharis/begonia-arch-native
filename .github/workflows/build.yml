@@ -30,7 +30,7 @@ jobs:
     env:
       ROOTFS_SHA256: ${{ inputs.rootfs_sha256 }}
       SSH_PUBLIC_KEY: ${{ inputs.ssh_public_key }}
-      FETCH_ROOTFS: ${{ github.event_name == 'workflow_dispatch' && '1' || '0' }}
+      FETCH_ROOTFS: '1'
     steps:
       - uses: actions/checkout@v4
       - name: Install build tools
@@ -42,13 +42,15 @@ jobs:
       - name: Compile kernel and matching DTB
         run: bash scripts/build-kernel.sh
       - name: Build headless Arch images
-        if: github.event_name == 'workflow_dispatch'
         run: |
-          printf '%s\n' "$SSH_PUBLIC_KEY" > inputs/authorized_keys
+          if [ -n "$SSH_PUBLIC_KEY" ]; then
+            printf '%s\n' "$SSH_PUBLIC_KEY" > inputs/authorized_keys
+          else
+            cp config/owner-ssh.pub inputs/authorized_keys
+          fi
           sudo bash scripts/build-rootfs.sh
           sudo bash scripts/build-boot.sh
       - name: Preserve input snapshot for repeat builds
-        if: github.event_name == 'workflow_dispatch'
         uses: actions/upload-artifact@v4
         with:
           name: official-arch-input-${{ github.run_id }}

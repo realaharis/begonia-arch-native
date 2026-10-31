@@ -1,4 +1,5 @@
 """Synthetic rejection tests. The fixture is NOT a bootable kernel/image."""
+from unittest.mock import patch
 import gzip, hashlib, importlib.util, stat, struct, unittest
 from pathlib import Path
 spec=importlib.util.spec_from_file_location("validator",Path(__file__).parents[1]/"scripts/validate-boot.py")
@@ -14,6 +15,7 @@ def fdt(compatible=None):
 def cpio():
     data=b""
     files={"init":b"#!/bin/sh\n","usb-gadget":b"#!/bin/sh\n",
+           "bin/mount":b"fixture","bin/switch_root":b"fixture",
            "bin/busybox":b"fixture","bin/blkid":b"fixture","bin/mountpoint":b"fixture","TRAILER!!!":b""}
     for i,(name,content) in enumerate(files.items()):
         name=name.encode()+b"\0"
@@ -46,6 +48,13 @@ class Validation(unittest.TestCase):
         self.assertEqual(r["device_boot"],"UNTESTED")
         self.assertFalse(r["measured_partition_fit"])
         self.assertFalse(r["flash_authorized"])
+    def test_missing_mount_tools(self):
+        for name in ('bin/mount', 'bin/switch_root'):
+            entries=v.cpio(cpio())
+            del entries[name]
+            with patch.object(v, 'cpio', return_value=entries):
+                with self.assertRaisesRegex(ValueError, 'initramfs missing '+name):
+                    v.validate(fixture())
     def test_wrong_board(self):
         with self.assertRaisesRegex(ValueError,"wrong device"): v.validate(fixture(b"realme,nemo"))
     def test_partition_too_small(self):

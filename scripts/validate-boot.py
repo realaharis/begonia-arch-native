@@ -121,7 +121,7 @@ def validate(data, components=None, boot_partition_bytes=None):
     need(off==64 and off+size==len(dtbo) and not any(reserved),"invalid DTBO entry")
     need(not fdt(dtbo[off:]),"recovery DTBO not empty")
     entries=cpio(ungzip(sections["ramdisk"]))
-    for name in ("init","usb-gadget","bin/busybox","bin/blkid","bin/mountpoint"):
+    for name in ("init","usb-gadget","bin/busybox","bin/blkid","bin/mountpoint","bin/mount","bin/switch_root"):
         need(name in entries,f"initramfs missing {name}")
         mode,payload=entries[name]
         need(stat.S_ISREG(mode) and mode&0o111,f"{name} not executable regular file")

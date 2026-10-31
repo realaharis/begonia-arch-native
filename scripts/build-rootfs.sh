@@ -53,7 +53,7 @@ touch "$root/etc/machine-id"
 ln -s /etc/machine-id "$root/var/lib/dbus/machine-id"
 bash scripts/check-rootfs-ssh.sh
 chroot "$root" /usr/bin/depmod "$(cat out/kernel.release)"
-bash scripts/build-initramfs.sh
+test -s out/initramfs.cpio.gz
 size="${ROOTFS_MIB:-4096}"
 cp out/packages.txt "$root/var/log/begonia/build-packages.txt"
 [[ "$size" =~ ^[0-9]+$ ]] && ((size >= 2048 && size <= 16384))

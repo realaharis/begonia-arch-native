@@ -22,4 +22,8 @@ if grep -Eq '^(xorg-server|gnome-shell|plasma-desktop|phosh|xfce4-session) ' out
 fi
 python3 scripts/create-devices.py "$root"
 bash scripts/check-rootfs-ssh.sh
+# Build and execute the actual Arch initramfs tools before expensive kernel compilation.
+install -Dm755 initramfs/init "$root/usr/lib/begonia/init"
+install -Dm755 overlay/usr/lib/begonia/usb-gadget "$root/usr/lib/begonia/usb-gadget"
+bash scripts/build-initramfs.sh
 touch work/rootfs-prepared

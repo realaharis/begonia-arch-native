@@ -10,6 +10,7 @@ unset LDFLAGS
 cp config/kernel.config work/linux/.config
 (cd work/linux && scripts/kconfig/merge_config.sh -m .config ../../config/headless.fragment)
 make -C work/linux olddefconfig
+cp work/linux/.config out/kernel.config
 python3 scripts/check-config.py work/linux/.config config/headless.fragment
 make -C work/linux -j"${JOBS:-$(nproc)}" Image.gz modules mediatek/mt6785-xiaomi-begonia.dtb
 make -C work/linux modules_install INSTALL_MOD_PATH="$PWD/work/kernel-package/usr" INSTALL_MOD_STRIP=1

@@ -42,7 +42,8 @@ systemctl --root="$root" enable "${units[@]}"
 ln -sfn /usr/lib/systemd/system/multi-user.target "$root/etc/systemd/system/default.target"
 # No display/touch probe or firmware substitution in the headless baseline.
 mkdir -p "$root/etc/modprobe.d" "$root/var/log/journal" "$root/var/log/begonia"
-printf '%s\n' 'blacklist panel_novatek_nt36672a' 'blacklist novatek_nvt_ts_spi' 'blacklist panfrost' > "$root/etc/modprobe.d/begonia-headless.conf"
+# Local terminal branch: do not suppress the panel and touchscreen modules.
+printf '%s\n' 'blacklist panfrost' > "$root/etc/modprobe.d/begonia-headless.conf"
 mkdir -p "$root/etc/systemd/system"
 for unit in sleep.target suspend.target hibernate.target hybrid-sleep.target; do
   ln -sfn /dev/null "$root/etc/systemd/system/$unit"

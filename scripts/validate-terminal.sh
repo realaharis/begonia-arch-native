@@ -16,6 +16,10 @@ systemctl --root="$root" is-enabled begonia-seatd.service
 # Arch seatd (0.9.x) no longer accepts -s; its socket is compiled at /run/seatd.sock.
 grep -Fxq "ExecStart=/usr/bin/seatd -g video" "$root/usr/lib/systemd/system/begonia-seatd.service"
 grep -Fxq "Environment=SEATD_SOCK=/run/seatd.sock" "$root/usr/lib/systemd/system/begonia-local-terminal.service"
+# A physical DRM session must have an actual controlling VT and login PAM session.
+grep -Fxq "PAMName=login" "$root/usr/lib/systemd/system/begonia-local-terminal.service"
+grep -Fxq "TTYPath=/dev/tty1" "$root/usr/lib/systemd/system/begonia-local-terminal.service"
+grep -Fxq "StandardInput=tty" "$root/usr/lib/systemd/system/begonia-local-terminal.service"
 test "$(stat -c%s out/arch-rootfs.ext4)" -lt 56136531968
 test -z "$(find "$root/etc/ssh" -name 'ssh_host_*_key' -print)"
 printf 'PASS: exact modules, firmware/DT name, Kconfig, services, partition bounds, no SSH host private keys\n' | tee out/terminal-validation.txt

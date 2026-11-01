@@ -12,8 +12,29 @@ cleanup() {
   local status=$? cleanup_failed=0
   trap - EXIT
   set +e
+  mkdir -p out
+  cp "$root/run/begonia-ui-test/"*.log "$root/run/begonia-ui-test/"*.json out/ 2>/dev/null
   # pacman-key may leave gpg-agent holding /dev open.
   chroot "$root" /usr/bin/gpgconf --homedir /etc/pacman.d/gnupg --kill all
+  # Kill only processes whose chroot is this exact build root, never host users.
+  python3 - "$root" <<'CLEANUP'
+import os, signal, sys, time
+from pathlib import Path
+root = os.path.realpath(sys.argv[1])
+def children():
+    found=[]
+    for entry in Path('/proc').iterdir():
+        if not entry.name.isdecimal(): continue
+        try:
+            if os.readlink(entry/'root') == root: found.append(int(entry.name))
+        except OSError: pass
+    return found
+for sig in (signal.SIGTERM, signal.SIGKILL):
+    for pid in children():
+        try: os.kill(pid, sig)
+        except ProcessLookupError: pass
+    time.sleep(0.2)
+CLEANUP
   for dir in run sys proc dev; do
     if mountpoint -q "$root/$dir"; then
       umount -R "$root/$dir" || cleanup_failed=1

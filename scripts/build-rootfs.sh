@@ -41,7 +41,7 @@ done
 systemctl --root="$root" enable "${units[@]}"
 # Display optional: failure never blocks the verified headless baseline.
 chmod 755 "$root/usr/lib/begonia/start-local-terminal"
-systemctl --root="$root" enable begonia-local-terminal.service begonia-seatd.service
+systemctl --root="$root" enable begonia-local-terminal.service begonia-seatd.service begonia-logs.timer
 ln -sfn /usr/lib/systemd/system/multi-user.target "$root/etc/systemd/system/default.target"
 # No display/touch probe or firmware substitution in the headless baseline.
 mkdir -p "$root/etc/modprobe.d" "$root/var/log/journal" "$root/var/log/begonia"
@@ -69,6 +69,7 @@ mkfs.ext4 -F -b 4096 -L ARCHBEGONIA -m 0 \
 e2fsck -fn out/arch-rootfs.ext4
 test "$(blkid -p -s LABEL -o value out/arch-rootfs.ext4)" = ARCHBEGONIA
 test "$(blkid -p -s TYPE -o value out/arch-rootfs.ext4)" = ext4
+tar -C "$root" -cJf out/firmware-begonia-csot.tar.xz usr/lib/firmware/novatek/nt36672a_begonia_csot.bin
 bash scripts/validate-terminal.sh
 cp config/sources.json out/sources.json
 find "$root/usr/lib/firmware" -type f -printf '%P\n' > out/firmware-inventory.txt

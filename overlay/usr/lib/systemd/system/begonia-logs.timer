@@ -1,0 +1,8 @@
+[Unit]
+Description=Capture delayed display and input diagnostics
+[Timer]
+OnBootSec=120
+OnUnitActiveSec=5min
+Unit=begonia-logs.service
+[Install]
+WantedBy=timers.target

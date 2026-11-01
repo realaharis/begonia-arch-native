@@ -1,10 +1,10 @@
 #!/bin/bash
-set -Eeuo pipefail
+set -Eeuxo pipefail
 cd "$XDG_RUNTIME_DIR"
 export WAYLAND_DEBUG=1
 sway --config /etc/begonia/sway.conf --debug >sway.log 2>&1 &
 sway_pid=$!
-trap 'kill "$sway_pid" 2>/dev/null || true; wait "$sway_pid" 2>/dev/null || true' EXIT
+trap 'status=$?; if ((status != 0)); then tail -n 100 sway.log protocols.log >&2; fi; kill "$sway_pid" 2>/dev/null || true; wait "$sway_pid" 2>/dev/null || true' EXIT
 for i in $(seq 1 60); do
   socket=$(find "$XDG_RUNTIME_DIR" -maxdepth 1 -name 'sway-ipc*.sock' -print -quit)
   display=$(find "$XDG_RUNTIME_DIR" -maxdepth 1 -name 'wayland-*' -type s -printf '%f\n' -quit)

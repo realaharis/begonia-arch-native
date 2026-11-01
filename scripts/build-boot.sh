@@ -28,5 +28,5 @@ mv out/arch-rootfs.ext4 out/arch-rootfs-terminal.ext4
 cp docs/TERMINAL_INSTALL.md out/
 cp docs/TERMINAL_REPORT.md out/
 # Measured device: boot=67108864, userdata=56136531968 bytes.
-(cd out && sha256sum Image.gz begonia.dtb initramfs.cpio.gz empty.dtbo boot-*.img arch-rootfs-terminal.ext4 kernel-modules.tar.xz > SHA256SUMS)
+(cd out && sha256sum Image.gz begonia.dtb initramfs.cpio.gz empty.dtbo boot-*.img arch-rootfs-terminal.ext4 kernel-modules.tar.xz firmware-begonia-csot.tar.xz > SHA256SUMS)
 python3 scripts/manifest.py

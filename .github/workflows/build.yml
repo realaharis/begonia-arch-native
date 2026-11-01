@@ -78,3 +78,22 @@ jobs:
           retention-days: 30
           compression-level: 1
           if-no-files-found: error
+      - name: Small independently reviewable boot and validation bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: begonia-terminal-review-${{ github.run_id }}
+          path: |
+            out/boot-terminal.img
+            out/boot-rndis.img
+            out/kernel.config
+            out/kernel.release
+            out/*.json
+            out/*.txt
+            out/*.log
+            out/*.sha256
+            out/SHA256SUMS
+            out/TERMINAL_*.md
+            logs/
+          retention-days: 30
+          compression-level: 6

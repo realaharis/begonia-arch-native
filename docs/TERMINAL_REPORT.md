@@ -44,8 +44,8 @@ mapped to DSI-1; verify the actual connector name in logs.
 CI: strict Kconfig after olddefconfig; full kernel/DT/modules compile; every
 module vermagic and installed byte identity; firmware hash/DT request; signed
 Arch package transaction; real aarch64 chroot execution; headless Sway runs
-foot and wvkbd, verifies both Wayland protocols, sends a command through the
-virtual-keyboard protocol and checks shell output; services enabled; ext4
+foot and wvkbd, verifies both Wayland protocols, sends a synthetic command using wtype through the
+virtual-keyboard protocol and checks shell output (not a simulated tap on wvkbd); services enabled; ext4
 fsck/label; Android v2 component/address validation and measured boot bound.
 Headless compositor testing does not exercise MediaTek DRM or physical input.
 
@@ -53,7 +53,7 @@ The previous successful run 41245751321 did not install touch firmware or an
 OSK. Its package warnings included ignored generic linux-aarch64 upgrade,
 mkinitcpio architecture hook and generic privacy-screen module warnings. These
 are distinct from device kernel compilation; this project builds its own
-initramfs. The new run's complete logs remain authoritative.
+initramfs. The new run's complete logs remain authoritative. Seatd 0.9.x in Arch has its socket path compiled in and does not accept `-s`; the service now uses the default /run/seatd.sock, and CI validates the matching Sway environment.
 
 ## Hardware matrix
 

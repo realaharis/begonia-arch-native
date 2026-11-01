@@ -29,7 +29,7 @@ is selected or claimed compatible. The CSOT mode is 1080 x 2340.
 The owner's old LCM_name=NONE does not identify the installed panel.
 
 Sway + foot + wvkbd use software rendering (pixman). GPU acceleration is not
-claimed. Sway runs as alarm, seatd grants DRM/input access. wvkbd commit
+claimed. Sway runs as alarm with PAM login and a physical tty1 controlling session; seatd grants DRM/input access. This VT binding is validated structurally in CI but must still be exercised on begonia hardware. wvkbd commit
 f7e9ea3a7565decd0d120861c1cb36a7b6836244 (v0.21, GPLv3) is built natively
 from retained source. It uses virtual-keyboard-v1 plus layer-shell, stays
 visible and reserves screen space. foot is tiled, not fullscreen. This avoids

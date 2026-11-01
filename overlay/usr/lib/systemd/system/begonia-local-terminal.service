@@ -1,11 +1,20 @@
 [Unit]
 Description=Begonia touch terminal (experimental CSOT)
 Requires=begonia-seatd.service
-After=begonia-seatd.service systemd-udev-trigger.service
+After=begonia-seatd.service systemd-udev-trigger.service systemd-user-sessions.service
+Conflicts=getty@tty1.service
 StartLimitIntervalSec=0
 [Service]
 User=alarm
 SupplementaryGroups=video input
+PAMName=login
+TTYPath=/dev/tty1
+StandardInput=tty
+StandardOutput=journal
+StandardError=journal
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
 RuntimeDirectory=begonia-ui
 RuntimeDirectoryMode=0700
 Environment=XDG_RUNTIME_DIR=/run/begonia-ui

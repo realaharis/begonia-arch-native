@@ -31,6 +31,7 @@ test "$(cat input-result)" = TERMINAL_INPUT_OK
 swaymsg -t get_outputs >outputs.json
 swaymsg -t get_inputs >inputs.json
 printf 'PASS: Sway + foot + wvkbd mapped; virtual keyboard shell input works. No physical hardware tested.\n' | tee terminal-smoke.log
-swaymsg exit
+# Sway can close IPC before acknowledging exit; process status below is decisive.
+swaymsg exit || true
 wait "$sway_pid"
 trap - EXIT

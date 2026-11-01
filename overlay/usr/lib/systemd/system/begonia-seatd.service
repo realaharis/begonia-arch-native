@@ -1,7 +1,7 @@
 [Unit]
 Description=Seat access for Begonia terminal
 [Service]
-ExecStart=/usr/bin/seatd -g video -s /run/begonia-seatd.sock
+ExecStart=/usr/bin/seatd -g video
 Restart=on-failure
 [Install]
 WantedBy=multi-user.target

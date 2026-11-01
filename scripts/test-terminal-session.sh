@@ -23,14 +23,15 @@ for i in $(seq 1 30); do
 done
 jq -e '.. | objects | select(.app_id? == "begonia-terminal")' tree.json >/dev/null
 pgrep -x wvkbd-mobintl
-# Same virtual-keyboard protocol as the OSK; prove text reaches the terminal shell.
+# wtype exercises virtual-keyboard-v1 and verifies foot receives synthetic input.
+# This does NOT simulate an actual tap on wvkbd, nor validate physical touch.
 wtype "printf TERMINAL_INPUT_OK > '$XDG_RUNTIME_DIR/input-result'"
 wtype -k Return
 for i in $(seq 1 10); do test -f input-result && break; sleep 1; done
 test "$(cat input-result)" = TERMINAL_INPUT_OK
 swaymsg -t get_outputs >outputs.json
 swaymsg -t get_inputs >inputs.json
-printf 'PASS: Sway + foot + wvkbd mapped; virtual keyboard shell input works. No physical hardware tested.\n' | tee terminal-smoke.log
+printf 'PASS: Sway + foot + wvkbd running; wtype virtual-keyboard-v1 sends shell input. wvkbd touch presses and physical hardware NOT tested.\n' | tee terminal-smoke.log
 # Sway can close IPC before acknowledging exit; process status below is decisive.
 swaymsg exit || true
 wait "$sway_pid"

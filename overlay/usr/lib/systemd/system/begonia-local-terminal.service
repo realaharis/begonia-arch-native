@@ -10,7 +10,7 @@ RuntimeDirectory=begonia-ui
 RuntimeDirectoryMode=0700
 Environment=XDG_RUNTIME_DIR=/run/begonia-ui
 Environment=LIBSEAT_BACKEND=seatd
-Environment=SEATD_SOCK=/run/begonia-seatd.sock
+Environment=SEATD_SOCK=/run/seatd.sock
 Environment=WLR_RENDERER=pixman
 Environment=WLR_LIBINPUT_NO_DEVICES=1
 ExecStart=/usr/lib/begonia/start-local-terminal

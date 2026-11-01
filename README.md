@@ -1,33 +1,21 @@
 # Native Arch Linux ARM for Xiaomi Redmi Note 8 Pro
 
-**Engineering checkpoint, 2026-10-30. No flashable image has been built or
-tested. Do not install this ZIP through TWRP: it contains source, not a recovery
-installer.**
+This branch develops an **experimental CSOT Terminal Edition**: native Arch
+Linux ARM, device-specific Linux, Sway, foot and an always-visible wvkbd.
+No Android runtime, proot or alternate distribution is used on the phone.
 
-The target is native aarch64 Arch Linux ARM, booting the MT6785 Linux kernel
-directly into systemd. No Android runtime, chroot, proot, emulation, Debian,
-Alpine, or postmarketOS installation is part of the phone runtime.
+The owner has verified kernel/initramfs, ext4 root, systemd and sshd on-device.
+USB gadget is partial; second-phone networking, display and touch remain
+unverified. A successful Actions run proves build/software checks only.
 
-The first milestone is headless. Display, touchscreen, Wi-Fi, GPU, audio and
-desktop work are deliberately deferred until boot, storage and communication
-have been verified on the actual device.
+See [Terminal Edition report](docs/TERMINAL_REPORT.md) and
+[installation/rollback instructions](docs/TERMINAL_INSTALL.md).
+Check the exact commit's Actions result before downloading images.
+Installing the full rootfs overwrites userdata and requires explicit approval.
+TWRP and calibration partitions must remain untouched.
 
-## Current evidence
-
-| Item | Status |
-|---|---|
-| Kernel/config/DTB source selection | Pinned and source-inspected |
-| Kernel config SHA512 | Matches pmaports APKBUILD |
-| Validator tests | 10 passed locally |
-| Independent AOSP boot packaging cross-check | Passed with synthetic payloads |
-| Shell/Python syntax checks | Passed locally |
-| Full build attempt | Stopped during source fetch: network timeout |
-| GitHub repository | realaharis/begonia-arch-native |
-| GitHub Actions run | Initial kernel CI being configured; see Actions for current result |
-| Official Arch rootfs download | Attempted; blocked by network timeout |
-| Compiled kernel / boot.img / rootfs image | Not produced |
-| Real-device boot / USB / SSH | Untested |
-| Headless milestone | Not achieved |
+Older headless documentation below is historical and does not describe this
+branch's graphical package set. Preserve a matching headless boot/rootfs backup.
 
 ## Source selection
 

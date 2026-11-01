@@ -1,6 +1,6 @@
 #!/bin/sh
 # Always visible: virtual-keyboard-v1 + layer-shell, no text-input auto-popup dependency.
-wvkbd-mobintl -l full,special,nav,persian --height 280 &
+wvkbd-mobintl -l full,special,nav,persian -H 280 &
 keyboard=$!
 trap 'kill "$keyboard" 2>/dev/null || true' EXIT INT TERM
 while :; do

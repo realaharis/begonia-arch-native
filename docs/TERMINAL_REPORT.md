@@ -23,7 +23,9 @@ SHA512. Its .zst file is decompressed into /usr/lib/firmware/novatek/.
 Touch drivers are modules so probing occurs after rootfs firmware is available.
 Firmware is proprietary; an open-source redistribution license has not been
 established. Its provenance and unmodified source archive are retained.
-No Tianma DT or firmware combination is selected or claimed compatible.
+The same panel driver also contains Tianma/beryllium entries; these are not
+evidence for a begonia Tianma variant. No Tianma DT or firmware combination
+is selected or claimed compatible. The CSOT mode is 1080 x 2340.
 The owner's old LCM_name=NONE does not identify the installed panel.
 
 Sway + foot + wvkbd use software rendering (pixman). GPU acceleration is not

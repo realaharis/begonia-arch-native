@@ -1,0 +1,30 @@
+name: Build upstream UBports Installer ARM64
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          repository: ubports/ubports-installer
+          ref: 0.11.2
+          path: upstream
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install pnpm
+        run: npm install -g pnpm
+      - name: Build Linux ARM64 directory
+        working-directory: upstream
+        run: |
+          pnpm install --frozen-lockfile
+          node build.js -o linux -p dir -a arm64
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubports-installer-linux-arm64-EXPERIMENTAL-NOT-ANDROID
+          path: upstream/build/
+          if-no-files-found: error

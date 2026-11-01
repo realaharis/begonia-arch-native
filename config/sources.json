@@ -24,7 +24,14 @@
     "url": "https://gitlab.postmarketos.org/mt6785-mainline/firmware",
     "commit": "d62a654f9f84344571cbf5a306d33869d49aa70b",
     "license": "proprietary; redistribution terms not established",
-    "included": false,
-    "reason": "Display and touchscreen are deferred. No firmware required by the selected UFS/USB path has been identified."
+    "included": true,
+    "reason": "Exact CSOT firmware from pinned pmaports package; proprietary, no inferred open-source license.",
+    "sha512": "230a2acca5cf5d179c30338416dad01c14c0e8bf73e8034855c39a16757394c0d0fb8b924eead93cc873ffe50ba97faf5c3aea9034ac3ba31ff55c04185a9f80"
+  },
+  "wvkbd": {
+    "url": "https://github.com/jjsullivan5196/wvkbd.git",
+    "commit": "f7e9ea3a7565decd0d120861c1cb36a7b6836244",
+    "license": "GPL-3.0",
+    "version": "0.21"
   }
 }

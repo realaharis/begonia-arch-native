@@ -1,15 +1,20 @@
 [Unit]
-Description=Experimental local DRM Arch terminal
-After=systemd-udev-settle.service
-Wants=systemd-udev-settle.service
-ConditionPathExists=/dev/dri/card0
-
+Description=Begonia touch terminal (experimental CSOT)
+Requires=begonia-seatd.service
+After=begonia-seatd.service systemd-udev-trigger.service
+StartLimitIntervalSec=0
 [Service]
-Type=simple
+User=alarm
+SupplementaryGroups=video input
+RuntimeDirectory=begonia-ui
+RuntimeDirectoryMode=0700
+Environment=XDG_RUNTIME_DIR=/run/begonia-ui
+Environment=LIBSEAT_BACKEND=seatd
+Environment=SEATD_SOCK=/run/begonia-seatd.sock
+Environment=WLR_RENDERER=pixman
+Environment=WLR_LIBINPUT_NO_DEVICES=1
 ExecStart=/usr/lib/begonia/start-local-terminal
-Restart=on-failure
-RestartSec=5
-Environment=LIBSEAT_BACKEND=builtin
-
+Restart=always
+RestartSec=10
 [Install]
 WantedBy=multi-user.target

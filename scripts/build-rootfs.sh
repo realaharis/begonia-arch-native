@@ -41,7 +41,7 @@ done
 systemctl --root="$root" enable "${units[@]}"
 # Display optional: failure never blocks the verified headless baseline.
 chmod 755 "$root/usr/lib/begonia/start-local-terminal"
-systemctl --root="$root" enable begonia-local-terminal.service
+systemctl --root="$root" enable begonia-local-terminal.service begonia-seatd.service
 ln -sfn /usr/lib/systemd/system/multi-user.target "$root/etc/systemd/system/default.target"
 # No display/touch probe or firmware substitution in the headless baseline.
 mkdir -p "$root/etc/modprobe.d" "$root/var/log/journal" "$root/var/log/begonia"
@@ -58,7 +58,7 @@ ln -s /etc/machine-id "$root/var/lib/dbus/machine-id"
 bash scripts/check-rootfs-ssh.sh
 chroot "$root" /usr/bin/depmod "$(cat out/kernel.release)"
 test -s out/initramfs.cpio.gz
-size="${ROOTFS_MIB:-4096}"
+size="${ROOTFS_MIB:-6144}"
 cp out/packages.txt "$root/var/log/begonia/build-packages.txt"
 [[ "$size" =~ ^[0-9]+$ ]] && ((size >= 2048 && size <= 16384))
 truncate -s "${size}M" out/arch-rootfs.ext4
@@ -69,5 +69,6 @@ mkfs.ext4 -F -b 4096 -L ARCHBEGONIA -m 0 \
 e2fsck -fn out/arch-rootfs.ext4
 test "$(blkid -p -s LABEL -o value out/arch-rootfs.ext4)" = ARCHBEGONIA
 test "$(blkid -p -s TYPE -o value out/arch-rootfs.ext4)" = ext4
+bash scripts/validate-terminal.sh
 cp config/sources.json out/sources.json
 find "$root/usr/lib/firmware" -type f -printf '%P\n' > out/firmware-inventory.txt

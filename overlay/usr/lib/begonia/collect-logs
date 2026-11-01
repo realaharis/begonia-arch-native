@@ -5,6 +5,13 @@ mkdir -p "$dest"
 id=$(cat /proc/sys/kernel/random/boot_id)
 {
   uname -a
+  systemctl status begonia-local-terminal begonia-seatd --no-pager || true
+  ls -l /sys/class/drm /sys/class/backlight /dev/input || true
+  cat /proc/bus/input/devices || true
+  libinput list-devices || true
+  for f in /sys/class/drm/card*-DSI-*/status /sys/class/backlight/*/brightness; do
+    test ! -r "$f" || { echo "$f"; cat "$f"; }
+  done
   cat /proc/cmdline
   cat /etc/os-release
   findmnt /

@@ -17,6 +17,7 @@ git -C work/linux checkout --detach FETCH_HEAD
 test "$(git -C work/linux rev-parse HEAD)" = "${fields[1]}"
 git -C work/linux diff --exit-code
 git -C work/linux show -s --format=fuller HEAD > out/kernel-source.txt
+bash scripts/fetch-terminal.sh
 if [[ "${FETCH_ROOTFS:-1}" = 0 ]]; then exit 0; fi
 if [[ ! -s inputs/ArchLinuxARM-aarch64.tar.gz ]]; then
   bash scripts/download-rootfs.sh

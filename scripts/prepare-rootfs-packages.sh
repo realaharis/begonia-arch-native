@@ -55,10 +55,22 @@ chroot "$root" /usr/bin/pacman-key --populate archlinuxarm
 # Upgrade the userspace consistently rather than mixing a new sudo with old libraries.
 chroot "$root" /usr/bin/findmnt -T /var/cache/pacman/pkg
 chroot "$root" /usr/bin/df -h / /var/cache/pacman/pkg
-chroot "$root" /usr/bin/pacman -Syu --needed --noconfirm sudo openssh mkinitcpio util-linux weston foot mesa libinput
-for file in sudo visudo ssh-keygen mountpoint blkid weston foot; do
+chroot "$root" /usr/bin/pacman -Syu --needed --noconfirm sudo openssh mkinitcpio util-linux sway foot seatd mesa libinput ttf-dejavu wayland wayland-protocols wayland-utils cairo pango libxkbcommon gcc make pkgconf scdoc dbus jq wtype
+for file in sudo visudo ssh-keygen mountpoint blkid sway foot seatd wtype; do
   test -x "$root/usr/bin/$file" || { echo "Missing required Arch binary: $file" >&2; exit 1; }
 done
+mkdir -p "$root/usr/src/wvkbd"
+tar -xf inputs/wvkbd-source.tar.gz -C "$root/usr/src/wvkbd"
+chroot "$root" /usr/bin/make -C /usr/src/wvkbd -j2
+chroot "$root" /usr/bin/make -C /usr/src/wvkbd PREFIX=/usr install
+install -Dm644 work/firmware/nt36672a_begonia_csot.bin "$root/usr/lib/firmware/novatek/nt36672a_begonia_csot.bin"
+cp -a overlay/. "$root/"
+chmod 755 "$root/usr/lib/begonia/"*
+install -Dm755 scripts/test-terminal-session.sh "$root/usr/lib/begonia/test-terminal-session"
+install -d -o 1000 -g 1000 -m 700 "$root/run/begonia-ui-test"
+chroot "$root" runuser -u alarm -- env XDG_RUNTIME_DIR=/run/begonia-ui-test WLR_BACKENDS=headless WLR_RENDERER=pixman WLR_LIBINPUT_NO_DEVICES=1 /usr/lib/begonia/test-terminal-session
+cp "$root/run/begonia-ui-test/"*.log out/
+cp "$root/run/begonia-ui-test/"*.json out/
 mkdir -p out
 chroot "$root" /usr/bin/pacman -Q > out/packages.txt
 # Keep exact downloaded packages for auditing/reconstruction of this rolling transaction.

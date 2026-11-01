@@ -21,8 +21,12 @@ for mode in ecm rndis; do
     --dtb out/begonia.dtb --recovery_dtbo out/empty.dtbo \
     --cmdline "console=tty0 fbcon=map:0 bootopt=64S3,32N2,64N2 root=LABEL=ARCHBEGONIA rw loglevel=7 ignore_loglevel panic=0 systemd.unit=multi-user.target arch.usb=$mode" \
     --output "out/boot-$mode.img"
-  python3 scripts/validate-boot.py "out/boot-$mode.img" --components out > "out/validation-$mode.json"
+  python3 scripts/validate-boot.py "out/boot-$mode.img" --components out --boot-partition-bytes 67108864 > "out/validation-$mode.json"
 done
-# Development ceiling only. Measured boot-partition size is checked separately.
-(cd out && sha256sum Image.gz begonia.dtb initramfs.cpio.gz empty.dtbo boot-*.img arch-rootfs.ext4 kernel-modules.tar.xz > SHA256SUMS)
+cp out/boot-ecm.img out/boot-terminal.img
+mv out/arch-rootfs.ext4 out/arch-rootfs-terminal.ext4
+cp docs/TERMINAL_INSTALL.md out/
+cp docs/TERMINAL_REPORT.md out/
+# Measured device: boot=67108864, userdata=56136531968 bytes.
+(cd out && sha256sum Image.gz begonia.dtb initramfs.cpio.gz empty.dtbo boot-*.img arch-rootfs-terminal.ext4 kernel-modules.tar.xz > SHA256SUMS)
 python3 scripts/manifest.py

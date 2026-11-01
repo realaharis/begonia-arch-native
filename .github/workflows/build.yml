@@ -45,7 +45,7 @@ jobs:
         run: sudo bash scripts/prepare-rootfs.sh
       - name: Compile kernel and matching DTB
         run: bash scripts/build-kernel.sh
-      - name: Build headless Arch images
+      - name: Build Terminal Edition images
         run: |
           if [ -n "$SSH_PUBLIC_KEY" ]; then
             printf '%s\n' "$SSH_PUBLIC_KEY" > inputs/authorized_keys
@@ -63,6 +63,8 @@ jobs:
             inputs/ArchLinuxARM-aarch64.tar.gz
             inputs/SHA256SUMS
             inputs/arch-package-inputs.tar
+            inputs/firmware-*.tar.gz
+            inputs/wvkbd-source.tar.gz
           retention-days: 30
           compression-level: 0
       - name: Build output and failure logs

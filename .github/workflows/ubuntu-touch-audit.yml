@@ -1,0 +1,26 @@
+name: Ubuntu Touch begonia source audit
+on:
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect upstream metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p output
+          curl -fLsS --retry 3 https://devices.ubuntu-touch.io/device/begonia/ -o output/device-page.html
+          curl -fLsS --retry 3 https://raw.githubusercontent.com/ubuntu-touch-begonia/ubuntu-touch-begonia/main/README.md -o output/upstream-readme.md
+          cat > output/DEVICE.txt <<'EOF'
+          Device: Xiaomi Redmi Note 8 Pro (begonia)
+          Observed vendor: Android 11 MIUI V12.5.6.0.RGGCNXM
+          Current OS: Arch Linux ARM
+          Modified partitions: boot, userdata
+          Status: NOT FLASHABLE. Upstream base compatibility and signed images NOT verified.
+          EOF
+          sha256sum output/* > output/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-touch-begonia-audit-NOT-FLASHABLE
+          path: output/
